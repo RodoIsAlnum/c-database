@@ -12,19 +12,23 @@ void print_usage(char *argv[]) {
 	printf("USAGE: %s -n -f <db file>\n", argv[0]);
 	printf("\t-n - Create a new database file\n");
 	printf("\t-f - Opens an existent database file\n");
+	printf("\t-a <Emp data> - Adds a new employee to the database\n");
+
 }
 
 
 int main(int argc, char *argv[]) { 
 	int flagOpt;
 	char *filepath = NULL;
+	char *newBuffer = NULL;
 	bool isNewFile = false;
+	struct employee_t *employees;
 
 	int dbfd = -1;
 	struct dbheader_t *header = NULL;
 	
 	// conseguir los valores de getopt
-	while ((flagOpt = getopt(argc, argv,"nf:")) != -1) {
+	while ((flagOpt = getopt(argc, argv,"nf:a:")) != -1) {
 		switch(flagOpt) {
 			case 'f':
 				filepath = optarg;	// optarg proviene del propio uso de la función
@@ -32,6 +36,9 @@ int main(int argc, char *argv[]) {
 				break;
 			case 'n':
 				isNewFile = true;
+				break;
+			case 'a':
+				newBuffer = optarg;
 				break;
 			case '?':			// cualquier valor que no sea esperado
 				printf("Unknown option -%c\n", flagOpt);
@@ -71,12 +78,21 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	output_file(dbfd, header);
+	if (read_employees(dbfd, header, &employees) != STATUS_SUCCESS) {
+		printf("Failed to read employees");
+		return -1;
+	}
+
+	if (newBuffer) {
+		add_employee(header, &employees, newBuffer);
+	}
+
+	output_file(dbfd, header, employees);
 
 
 	// debugging
-	printf("New file? %d\n", isNewFile);
-	printf("filepath: %s\n", filepath);
+	//printf("New file? %d\n", isNewFile);
+	//printf("filepath: %s\n", filepath);
 
 	
 	return 0;
