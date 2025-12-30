@@ -26,7 +26,6 @@ int list_employees(struct dbheader_t *dbhdr, struct employee_t *employees) {
 int add_employee(struct dbheader_t *dbhdr, struct employee_t **employees, char *addstring) {
 	if (NULL == dbhdr) return STATUS_ERROR;
 	if (NULL == employees) return STATUS_ERROR;
-	if (NULL == *employees) return STATUS_ERROR;
 	if (NULL == addstring) return STATUS_ERROR;
 
 	char *name = strtok(addstring, ",");  // strtok divide cadenas en subcadenas utilizando un carácter separador.
@@ -45,6 +44,8 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t **employees, char *
 	if (e == NULL) {
 		return STATUS_ERROR;
 	}
+
+	*employees = e;
 
 	dbhdr->count++;
 
