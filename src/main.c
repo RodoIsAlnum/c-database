@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
 			printf("Couldn't create database file \n");
 			return -1;
 		}
-		if (create_db_header(dbfd,&header) == -1) {
+		if (create_db_header(/*dbfd,*/&header) == -1) {
 			printf("couldn't create database header\n");
 		}
 	} else {
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (list) {
-		list_employees(dbhdr,employees);
+		list_employees(header,employees);
 	}
 
 	output_file(dbfd, header, employees);
