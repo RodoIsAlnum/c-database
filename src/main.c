@@ -22,13 +22,14 @@ int main(int argc, char *argv[]) {
 	char *filepath = NULL;
 	char *newBuffer = NULL;
 	bool isNewFile = false;
+	bool list = false;
 	struct employee_t *employees;
 
 	int dbfd = -1;
 	struct dbheader_t *header = NULL;
 	
 	// conseguir los valores de getopt
-	while ((flagOpt = getopt(argc, argv,"nf:a:")) != -1) {
+	while ((flagOpt = getopt(argc, argv,"nf:a:l")) != -1) {
 		switch(flagOpt) {
 			case 'f':
 				filepath = optarg;	// optarg proviene del propio uso de la función
@@ -42,6 +43,9 @@ int main(int argc, char *argv[]) {
 				break;
 			case '?':			// cualquier valor que no sea esperado
 				printf("Unknown option -%c\n", flagOpt);
+				break;
+			case 'l':
+				list = true;
 				break;
 			default:
 				return -1;		// simplemente dar error, no debería caer en default
@@ -85,6 +89,10 @@ int main(int argc, char *argv[]) {
 
 	if (newBuffer) {
 		add_employee(header, &employees, newBuffer);
+	}
+
+	if (list) {
+		list_employees(dbhdr,employees);
 	}
 
 	output_file(dbfd, header, employees);
